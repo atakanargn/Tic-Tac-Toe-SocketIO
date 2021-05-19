@@ -84,8 +84,6 @@ io.on('connection', function(socket) {
     socket.on('hamle', function(box) {
         if (sira == -1) {
             socket.emit('mesaj', 'Arkadaşını bekler misin?')
-        } else if (sira == -2) {
-            socket.emit('mesaj', 'Oyun bitmiş!')
         } else if (socket.nickname == x_kisisi && sira == 0) {
             if (matris[parseInt(box)] == '') {
                 matris[parseInt(box)] = 'X';
@@ -101,7 +99,12 @@ io.on('connection', function(socket) {
                     for (var i = 0; i < gelenler.length; i++) {
                         gelenler[i].emit('mesaj', x_kisisi + " KAZANDI!\nOyun bitti.");
                     }
-                    sira = -2;
+                    var x_kisisi = '';
+                    var o_kisisi = '';
+                    var gelenler = [];
+                    var kullanicilar = [];
+                    var matris = ['', '', '', '', '', '', '', '', '']
+                    var sira = -1;
                     return;
                 }
 
@@ -125,7 +128,12 @@ io.on('connection', function(socket) {
                     for (var i = 0; i < gelenler.length; i++) {
                         gelenler[i].emit('mesaj', o_kisisi + " KAZANDI!\nOyun bitti.");
                     }
-                    sira = -2;
+                    var x_kisisi = '';
+                    var o_kisisi = '';
+                    var gelenler = [];
+                    var kullanicilar = [];
+                    var matris = ['', '', '', '', '', '', '', '', '']
+                    var sira = -1;
                     return;
                 }
 
@@ -140,4 +148,6 @@ io.on('connection', function(socket) {
     });
 });
 
-http.listen();
+var server = http.listen(3001, () => {
+    console.log('server is running on port', server.address().port);
+});
