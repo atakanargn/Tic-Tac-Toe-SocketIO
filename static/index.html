@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My First Node App</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <style>
+        .boxes1 {
+            font-family: 'Lobster', cursive;
+            background-color: black;
+            color: white;
+            height: 30vh;
+            font-size: 20vh;
+            text-align: center;
+            justify-content: center;
+        }
+        
+        .boxes2 {
+            font-family: 'Lobster', cursive;
+            background-color: white;
+            color: black;
+            height: 30vh;
+            font-size: 20vh;
+            text-align: center;
+            justify-content: center;
+        }
+        
+        .lobby {
+            font-family: 'Lobster', cursive;
+            background-color: purple;
+            color: white;
+            height: 30vh;
+            font-size: 3vh;
+            padding: 4vh;
+            height: 90vh;
+        }
+    </style>
+</head>
+
+<body>
+    <br>
+    <div class="row">
+        <div class="col-md-3 lobby">
+            Odadakiler
+            <hr style="background-color:white;">
+            <p id="oyuncular">
+            </p>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col boxes1" id="b0" onclick="box(0);">
+                    O
+                </div>
+                <div class="col boxes2" id="b1" onclick="box(1);">
+                    X
+                </div>
+                <div class="col boxes1" id="b2" onclick="box(2);">
+                    O
+                </div>
+            </div>
+            <div class="row">
+                <div class="col boxes2" id="b3" onclick="box(3);">
+
+                </div>
+                <div class="col boxes1" id="b4" onclick="box(4);">
+
+                </div>
+                <div class="col boxes2" id="b5" onclick="box(5);">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col boxes1" id="b6" onclick="box(6);">
+
+                </div>
+                <div class="col boxes2" id="b7" onclick="box(7);">
+
+                </div>
+                <div class="col boxes1" id="b8" onclick="box(8);">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        var socket = io();
+
+        var nickname = prompt("Lütfen adınızı giriniz")
+        socket.emit('send-nickname', nickname);
+
+        socket.on('alinmis', () => {
+            alert("Kullanıcı adı alınmış, yeni bir kullanıcı adı girin.");
+            var nickname = prompt("Lütfen adınızı giriniz");
+            socket.emit('send-nickname', nickname);
+        });
+
+        socket.on('x', xsin);
+        socket.on('o', osun);
+        socket.on('dolu', () => {
+            alert("Oyun alanı dolu izleyebilirsin.")
+        });
+
+        function box(idd) {
+            socket.emit('hamle', idd);
+        }
+
+        socket.on('oyuncular', (gelen) => {
+            document.getElementById('oyuncular').innerHTML = "";
+            for (var i = 0; i < gelen.length; i++) {
+                document.getElementById('oyuncular').innerHTML = document.getElementById('oyuncular').innerHTML + gelen[i].toString() + "<br/>";
+            }
+        });
+
+        socket.on('mesaj', (gelen) => {
+            alert(gelen);
+        })
+
+        socket.on('boxes', (matris) => {
+            for (var i = 0; i < matris.length; i++) {
+                document.getElementById('b' + i).innerText = matris[i];
+            }
+        });
+
+        function xsin(message) {
+            alert("X'sin!")
+        }
+
+        function osun(message) {
+            alert("O'sun!")
+        }
+    </script>
+</body>
+
+</html>
